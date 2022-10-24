@@ -1,7 +1,7 @@
 # EnSinGAN
 Utilizing Single image GANs to capture Claude Monet's impressionistic paintings as generating new Monet-inspired ones.
 
-# Instaltion (TODO)
+# Installation (TODO)
 Use the provided requirements file to install the necessary packages.
 
 # How to use
