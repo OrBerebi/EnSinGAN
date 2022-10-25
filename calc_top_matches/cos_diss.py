@@ -293,21 +293,25 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_dir',dest='input_dir', type=str, help='input image dir', default='./Input/Paint/')
     parser.add_argument('--input_name',dest='input_name', type=str, help='input image name', required=True)
+    parser.add_argument('--out_file_name',dest='out_file_name', type=str, help='the .txt file name', default='top5_photo_monet.txt')
+
     args = parser.parse_args()
     user_images_unzipped_path = args.input_dir + args.input_name
     #print(user_images_unzipped_path)
     
 #user_images_unzipped_path = './Input/Images/monet_jpg_names/'
-    images_path = [user_images_unzipped_path,'../model_gen/Input/Images/monet_jpg_names/']
-    public_path = './classify_image_graph_def.pb'
-    feature_path = './monet_features.npy'
-    files_path = './monet_files.npy'
+    
+    root_folder_path = './calc_top_matches/'
+    images_path = [user_images_unzipped_path,'./model_gen/Input/monet_jpg_names/']
+    public_path = root_folder_path + 'metadata/classify_image_graph_def.pb'
+    feature_path = root_folder_path + 'metadata/monet_features.npy'
+    files_path = root_folder_path + 'metadata/monet_files.npy'
     fid_epsilon = 10e-15
 
     closest_image,real_image,val  = calculate_kid_given_paths(images_path, 'Inception', public_path,feature_path,files_path)
     #print("the correct file name:",closest_image)
 
-    f = open("top5_photo_monet.txt", "a")
+    f = open(root_folder_path + args.out_file_name, "a")
     tmp = str(real_image[0].as_posix())
     tmp = re.search(r"[^//]+$", tmp) #regex: get the last string that starts with '/' (its the file name)
     tmp = tmp.group()

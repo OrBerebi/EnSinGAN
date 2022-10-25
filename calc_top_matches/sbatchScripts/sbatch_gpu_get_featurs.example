@@ -6,9 +6,9 @@
 ### To ignore, just add another # - like so: ##SBATCH
 ################################################################################################
 
-#SBATCH --partition gtx1080			### specify partition name where to run a job. main: all nodes; gtx1080: 1080 gpu card nodes; rtx2080: 2080 nodes; teslap100: p100 nodes; titanrtx: titan nodes
+#SBATCH --partition main			### specify partition name where to run a job. main: all nodes; gtx1080: 1080 gpu card nodes; rtx2080: 2080 nodes; teslap100: p100 nodes; titanrtx: titan nodes
 #SBATCH --time 0-10:30:00			### limit the time of job running. Make sure it is not greater than the partition time limit!! Format: D-H:MM:SS
-#SBATCH --job-name gpu_job			### name of the job
+#SBATCH --job-name cos_calc			### name of the job
 #SBATCH --output job-%J.out			### output log for running job - %J for job number
 #SBATCH --gpus=1
 #SBATCH --verbose				### number of GPUs, allocating more than 1 requires IT team's permission
@@ -24,17 +24,16 @@ echo -e "\nSLURM_JOBID:\t\t" $SLURM_JOBID
 echo -e "SLURM_JOB_NODELIST:\t" $SLURM_JOB_NODELIST "\n\n"
 ### Start your code below ####
 module load anaconda				### load anaconda module (must be present when working with conda environments)
-source activate SinGan_env				### activate a conda environment, replace my_env with your conda environment
-photo_path="../painting_gen/Input/Paint/photo_jpg/"
+source activate EnSinGAN_env			### activate a conda environment, replace my_env with your conda environment
+photo_path="./painting_gen/Input/photo_jpg/"
 mkdir $photo_path/test_photo
 
-for i in {1..100}
+for i in {1..25}
 do
   photo_name="photo$i.jpg"
   cp $photo_path/$photo_name $photo_path/test_photo/
-  python -u cos_diss.py --input_dir $photo_path --input_name /test_photo/
+  python -u ./calc_top_matches/cos_diss.py --input_dir $photo_path --input_name /test_photo/
   rm -rf $photo_path/test_photo/*
 done
-
-#python random_samples.py --input_name monet199.jpg --mode random_samples_arbitrary_sizes --gen_start_scale 0 --scale_h 1.024 --scale_v 1.024 --input_dir ./Input/Images/monet_jpg/
+rm -rf $photo_path/test_photo
 
