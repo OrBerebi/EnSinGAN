@@ -7,10 +7,10 @@ Use the provided requirements file to install the necessary packages.
 # How to use
 ## step 1 - download the data
 Download the monet_jpg pantings dataset from: https://drive.google.com/drive/folders/1Z22cJ3ll8kJE6OyVBpQoFQ6WY4f6dD1r?usp=sharing
-and store its content in ./model_gen/Input/Images/monet_jpg_names/ 
+and store its content in ./model_gen/Input/monet_jpg_names/ 
 
 Download the photo_jpg images dataset from: https://drive.google.com/drive/folders/1Z22cJ3ll8kJE6OyVBpQoFQ6WY4f6dD1r?usp=sharing
-store its content in ./painting_gen/Input/Paint/photo_jpg/
+store its content in ./painting_gen/Input/photo_jpg/
 
 ## step 2 - Train the SinGAN models
 From the main folder run
