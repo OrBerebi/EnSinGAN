@@ -4,15 +4,19 @@ import os
 import shutil
 
 
+
+
+
+
 # Using readlines()
-file1 = open('top5_photo_monet_final.txt', 'r')
+file1 = open('calc_top_matches/top5_photo_monet.txt', 'r')
 Lines = file1.readlines()
 
-path = "./Output/top5/Paint2image/"
-save_path = "./eval_dir/top/top5_s1/"
-photo_path="./Input/Paint/photo_jpg/"
-monet_path="./Input/Images/monet_jpg_names/"
-scale_out_name="_out/start_scale=1.jpg"
+path = "painting_gen/Output/top5/Paint2image/"
+save_path = "eval_dir/top/top5_s6/"
+photo_path="painting_gen/Input/photo_jpg/"
+monet_path="model_gen/Input/monet_jpg_names/"
+scale_out_name="_out/start_scale=6.jpg"
 if not os.path.isdir(save_path):
       os.mkdir(save_path)
 

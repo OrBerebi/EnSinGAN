@@ -193,6 +193,9 @@ def save_networks(netG,netD,z,opt):
     torch.save(z, '%s/z_opt.pth' % (opt.outf))
 
 def adjust_scales2image(real_,opt):
+    print(real_.shape)
+    print(opt.min_size)
+    print(opt.max_size)
     #opt.num_scales = int((math.log(math.pow(opt.min_size / (real_.shape[2]), 1), opt.scale_factor_init))) + 1
     opt.num_scales = math.ceil((math.log(math.pow(opt.min_size / (min(real_.shape[2], real_.shape[3])), 1), opt.scale_factor_init))) + 1
     scale2stop = math.ceil(math.log(min([opt.max_size, max([real_.shape[2], real_.shape[3]])]) / max([real_.shape[2], real_.shape[3]]),opt.scale_factor_init))
@@ -203,6 +206,8 @@ def adjust_scales2image(real_,opt):
     opt.scale_factor = math.pow(opt.min_size/(min(real.shape[2],real.shape[3])),1/(opt.stop_scale))
     scale2stop = math.ceil(math.log(min([opt.max_size, max([real_.shape[2], real_.shape[3]])]) / max([real_.shape[2], real_.shape[3]]),opt.scale_factor_init))
     opt.stop_scale = opt.num_scales - scale2stop
+    print("true scale_factor:", opt.scale_factor)
+    print("stop scale:", opt.stop_scale)
     return real
 
 def adjust_scales2image_SR(real_,opt):
@@ -256,13 +261,13 @@ def generate_in2coarsest(reals,scale_v,scale_h,opt):
 def generate_dir2save(opt):
     dir2save = None
     if (opt.mode == 'train') | (opt.mode == 'SR_train'):
-        dir2save = './model_gen/TrainedModels/%s/scale_factor=%f,alpha=%d' % (opt.input_name[:-4], opt.scale_factor_init,opt.alpha)
+        dir2save = './model_gen/TrainedModels/%s/scale_factor=%f,alpha=%f,noise_amp=%f' % (opt.input_name[:-4], opt.scale_factor_init,opt.alpha,opt.noise_amp_init)
     elif (opt.mode == 'animation_train') :
         dir2save = './model_gen/TrainedModels/%s/scale_factor=%f_noise_padding' % (opt.input_name[:-4], opt.scale_factor_init)
     elif (opt.mode == 'paint_train') :
-        dir2save = './model_gen/TrainedModels/%s/scale_factor=%f_paint/start_scale=%d' % (opt.input_name[:-4], opt.scale_factor_init,opt.paint_start_scale)
+        dir2save = 'TrainedModels/%s/scale_factor=%f_paint/start_scale=%d' % (opt.input_name[:-4], opt.scale_factor_init,opt.paint_start_scale)
     elif opt.mode == 'random_samples':
-        dir2save = '%s/RandomSamples/%s/gen_start_scale=%d' % (opt.out,opt.input_name[:-4], opt.gen_start_scale)
+        dir2save = './model_gen/%s/RandomSamples/%s/gen_start_scale=%d,alpha=%f' % (opt.out,opt.input_name[:-4], opt.gen_start_scale,opt.alpha)
     elif opt.mode == 'random_samples_arbitrary_sizes':
         dir2save = '%s/RandomSamples_ArbitrerySizes/%s/scale_v=%f_scale_h=%f' % (opt.out,opt.input_name[:-4], opt.scale_v, opt.scale_h)
     elif opt.mode == 'animation':
@@ -278,6 +283,7 @@ def generate_dir2save(opt):
         if opt.quantization_flag:
             dir2save = '%s_quantized' % dir2save
     return dir2save
+
 
 def post_config(opt):
     # init fixed parameters

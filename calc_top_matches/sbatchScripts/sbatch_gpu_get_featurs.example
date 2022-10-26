@@ -28,7 +28,7 @@ source activate EnSinGAN_env			### activate a conda environment, replace my_env 
 photo_path="./painting_gen/Input/photo_jpg/"
 mkdir $photo_path/test_photo
 
-for i in {1..25}
+for i in {1..7038}
 do
   photo_name="photo$i.jpg"
   cp $photo_path/$photo_name $photo_path/test_photo/

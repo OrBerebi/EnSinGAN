@@ -1,5 +1,4 @@
 from __future__ import print_function
-
 import SinGAN.functions
 import SinGAN.models
 import argparse
@@ -87,7 +86,7 @@ def generate_gif(Gs,Zs,reals,NoiseAmp,opt,alpha=0.1,beta=0.9,start_scale=2,fps=1
     imageio.mimsave('%s/start_scale=%d/alpha=%f_beta=%f.gif' % (dir2save,start_scale,alpha,beta),images_cur,fps=fps)
     del images_cur
 
-def SinGAN_generate(Gs,Zs,reals,NoiseAmp,opt,in_s=None,scale_v=1,scale_h=1,n=0,gen_start_scale=0,num_samples=24):
+def SinGAN_generate(Gs,Zs,reals,NoiseAmp,opt,in_s=None,scale_v=1,scale_h=1,n=0,gen_start_scale=0,num_samples=50):
     #if torch.is_tensor(in_s) == False:
     if in_s is None:
         in_s = torch.full(reals[0].shape, 0, device=opt.device)
@@ -119,7 +118,6 @@ def SinGAN_generate(Gs,Zs,reals,NoiseAmp,opt,in_s=None,scale_v=1,scale_h=1,n=0,g
                 I_prev = images_prev[i]
                 I_prev = imresize(I_prev,1/opt.scale_factor, opt)
                 if opt.mode != "SR":
-                    #print("I_prev shape1:",I_prev.shape)
                     I_prev = I_prev[:, :, 0:round(scale_v * reals[n].shape[2]), 0:round(scale_h * reals[n].shape[3])]
                     I_prev = m(I_prev)
                     I_prev = I_prev[:,:,0:z_curr.shape[2],0:z_curr.shape[3]]
@@ -130,10 +128,6 @@ def SinGAN_generate(Gs,Zs,reals,NoiseAmp,opt,in_s=None,scale_v=1,scale_h=1,n=0,g
             if n < gen_start_scale:
                 z_curr = Z_opt
 
-            #print("scale_v:",scale_v)
-            #print("scale_h:",scale_h)
-            #print("I_prev shape:",I_prev.shape)
-            #print("z_curr shape:",z_curr.shape)
             z_in = noise_amp*(z_curr)+I_prev
             I_curr = G(z_in.detach(),I_prev)
 
@@ -147,7 +141,7 @@ def SinGAN_generate(Gs,Zs,reals,NoiseAmp,opt,in_s=None,scale_v=1,scale_h=1,n=0,g
                 except OSError:
                     pass
                 if (opt.mode != "harmonization") & (opt.mode != "editing") & (opt.mode != "SR") & (opt.mode != "paint2image"):
-                    plt.imsave('%s/%d.jpg' % (dir2save, i), functions.convert_image_np(I_curr.detach()), vmin=0,vmax=1)
+                    plt.imsave('%s/%d.png' % (dir2save, i), functions.convert_image_np(I_curr.detach()), vmin=0,vmax=1)
                     #plt.imsave('%s/%d_%d.png' % (dir2save,i,n),functions.convert_image_np(I_curr.detach()), vmin=0, vmax=1)
                     #plt.imsave('%s/in_s.png' % (dir2save), functions.convert_image_np(in_s), vmin=0,vmax=1)
             images_cur.append(I_curr)

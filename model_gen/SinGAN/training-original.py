@@ -7,7 +7,6 @@ import torch.utils.data
 import math
 import matplotlib.pyplot as plt
 from SinGAN.imresize import imresize
-import numpy as np
 
 def train(opt,Gs,Zs,reals,NoiseAmp):
     real_ = functions.read_image(opt)
@@ -111,10 +110,8 @@ def train_single_scale(netD,netG,reals,Gs,Zs,in_s,NoiseAmp,opt,centers=None):
             netD.zero_grad()
 
             output = netD(real).to(opt.device)
-            #print("D(x): ", output)
             #D_real_map = output.detach()
             errD_real = -output.mean()#-a
-            #print("E[-D(x)]: ", errD_real)
             errD_real.backward(retain_graph=True)
             D_x = -errD_real.item()
 
@@ -157,21 +154,20 @@ def train_single_scale(netD,netG,reals,Gs,Zs,in_s,NoiseAmp,opt,centers=None):
 
             fake = netG(noise.detach(),prev)
             output = netD(fake.detach())
-            #print("D(G(z)): ",output.shape)
             errD_fake = output.mean()
             errD_fake.backward(retain_graph=True)
-            D_G_z = errD_fake.item()
+            D_G_z = output.mean().item()
 
             gradient_penalty = functions.calc_gradient_penalty(netD, real, fake, opt.lambda_grad, opt.device)
             gradient_penalty.backward()
 
             errD = errD_real + errD_fake + gradient_penalty
             optimizerD.step()
-        
-        errD2plot.append(errD.detach().item())
-        
+
+        errD2plot.append(errD.detach())
+
         ############################
-        # (2) Update G network: minimaize D(G(z))
+        # (2) Update G network: maximize D(G(z))
         ###########################
 
         for j in range(opt.Gsteps):
@@ -195,18 +191,16 @@ def train_single_scale(netD,netG,reals,Gs,Zs,in_s,NoiseAmp,opt,centers=None):
 
             optimizerG.step()
 
-        errG2plot.append(errG.detach().item())
+        errG2plot.append(errG.detach()+rec_loss)
         D_real2plot.append(D_x)
         D_fake2plot.append(D_G_z)
-        z_opt2plot.append(rec_loss.item())
+        z_opt2plot.append(rec_loss)
 
         if epoch % 25 == 0 or epoch == (opt.niter-1):
             print('scale %d:[%d/%d]' % (len(Gs), epoch, opt.niter))
 
         if epoch % 500 == 0 or epoch == (opt.niter-1):
-            #plt.imsave('%s/fake_sample.png' %  (opt.outf), functions.convert_image_np(fake.detach()), vmin=0, vmax=1)
-            save_name_fake = opt.outf + "/fake_sample_" + str(epoch) + ".png"
-            plt.imsave(save_name_fake, functions.convert_image_np(fake.detach()), vmin=0, vmax=1)
+            plt.imsave('%s/fake_sample.png' %  (opt.outf), functions.convert_image_np(fake.detach()), vmin=0, vmax=1)
             plt.imsave('%s/G(z_opt).png'    % (opt.outf),  functions.convert_image_np(netG(Z_opt.detach(), z_prev).detach()), vmin=0, vmax=1)
             #plt.imsave('%s/D_fake.png'   % (opt.outf), functions.convert_image_np(D_fake_map))
             #plt.imsave('%s/D_real.png'   % (opt.outf), functions.convert_image_np(D_real_map))
@@ -214,34 +208,13 @@ def train_single_scale(netD,netG,reals,Gs,Zs,in_s,NoiseAmp,opt,centers=None):
             #plt.imsave('%s/prev.png'     %  (opt.outf), functions.convert_image_np(prev), vmin=0, vmax=1)
             #plt.imsave('%s/noise.png'    %  (opt.outf), functions.convert_image_np(noise), vmin=0, vmax=1)
             #plt.imsave('%s/z_prev.png'   % (opt.outf), functions.convert_image_np(z_prev), vmin=0, vmax=1)
-            #print("errG2plot shape:",len(errG2plot))
-            #print("D_real2plot shape:",len(D_real2plot))
-            #print("D_fake2plot shape:",len(D_fake2plot))
-            #print("z_opt2plot shape:",len(z_opt2plot))            
-            #print("errD2plot shape:",len(errD2plot))
-            #print("error D:",errD2plot)
+
+
             torch.save(z_opt, '%s/z_opt.pth' % (opt.outf))
 
         schedulerD.step()
-   # if len(Gs)==1 or len(Gs)==4:
-    plot6 = plt.figure(6)
-    plt.plot(np.asarray(errG2plot), label ="Scale: "+str(len(Gs)))
-    plt.xlabel('epochs')
-    plt.ylabel('E[D(G(z))]')
-    plt.title('Generator Learning Curve')
-    plt.grid(True)
-    plt.legend()
-    plt.savefig('%s/G_train_curve_loss.png' % (opt.outf))
+        schedulerG.step()
 
-   # if len(Gs)==1 or len(Gs)==4:
-    plot7 = plt.figure(7)
-    plt.plot(np.asarray(D_real2plot)+np.asarray(D_fake2plot), label ="Scale: "+str(len(Gs)))
-    plt.xlabel('epochs')
-    plt.ylabel('E[D(G(z))]-E[D(x)]')
-    plt.title('Discriminator Learning Curve')     
-    plt.grid(True)
-    plt.legend()
-    plt.savefig('%s/D_train_curve_loss.png' % (opt.outf))
     functions.save_networks(netG,netD,z_opt,opt)
     return z_opt,in_s,netG    
 

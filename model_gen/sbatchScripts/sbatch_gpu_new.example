@@ -7,7 +7,7 @@
 
 #SBATCH --partition gtx1080                     ### specify partition name where to run a job. main: all nodes; gtx1080: 1080 gpu card nodes; rtx2080: 2080 nodes; teslap100: p100 nodes; titanrtx: titan nodes
 #SBATCH --time 0-10:30:00			### limit the time of job running. Make sure it is not greater than the partition time limit!! Format: D-H:MM:SS
-#SBATCH --job-name monet1        		### name of the job
+#SBATCH --job-name monet6        		### name of the job
 #SBATCH --output job-%J.out			### output log for running job - %J for job number
 #SBATCH --gpus=1
 #SBATCH --verbose				### number of GPUs, allocating more than 1 requires IT team's permission
@@ -27,20 +27,20 @@ module load anaconda				### load anaconda module (must be present when working w
 #source activate singan_test				### activate a conda environment, replace my_env with your conda environment
 source activate EnSinGAN_env                            ### activate a conda environment, replace my_env with your conda environment
 
-python -u  ./model_gen/main_train.py --input_dir ./model_gen/Input/monet_jpg_names/ --input_name monet1.jpg --min_size 25 --max_size 256 --scale_factor 0.76  --alpha 1                      ### this command executes jupyter lab – replace with your own command
+python -u  ./model_gen/main_train.py --input_dir ./model_gen/Input/monet_jpg_names/ --input_name monet6.jpg --min_size 25 --max_size 256 --scale_factor 0.4  --alpha 10                      ### this command executes jupyter lab – replace with your own command
 
-#python -u  main_train.py --input_dir ./Input/Images/monet_jpg_names/ --input_name monet96.jpg --min_size 25 --max_size 256 --scale_factor 0.68	--alpha 10			### this command executes jupyter lab – replace with your own command
+#python -u  main_train.py --input_dir ./Input/Images/monet_jpg_names/ --input_name monet6016.jpg --min_size 25 --max_size 256 --scale_factor 0.68	--alpha 10			### this command executes jupyter lab – replace with your own command
 
-#python -u  main_train.py --input_dir ./Input/Images/monet_jpg_names/ --input_name monet96.jpg --min_size 11 --max_size 256 --scale_factor 0.75  --alpha 100                      ### this command executes jupyter lab – replace with your own command
-#python -u  main_train.py --input_dir ./model_gen/Input/monet_jpg_names/ --input_name monet6.jpg --min_size 25 --max_size 256 --scale_factor 0.76  --alpha 1                      ### this command executes jupyter lab – replace with your own command
-#python -u  main_train.py --input_dir ./Input/Images/monet_jpg_names/ --input_name monet96.jpg --min_size 11 --max_size 256 --scale_factor 0.75  --alpha 1                      ### this command executes jupyter lab – replace with your own command
+#python -u  main_train.py --input_dir ./Input/Images/monet_jpg_names/ --input_name monet6016.jpg --min_size 11 --max_size 256 --scale_factor 0.75  --alpha 100                      ### this command executes jupyter lab – replace with your own command
+#python -u  main_train.py --input_dir ./model_gen/Input/monet_jpg_names/ --input_name monet601.jpg --min_size 25 --max_size 256 --scale_factor 0.76  --alpha 1                      ### this command executes jupyter lab – replace with your own command
+#python -u  main_train.py --input_dir ./Input/Images/monet_jpg_names/ --input_name monet6016.jpg --min_size 11 --max_size 256 --scale_factor 0.75  --alpha 1                      ### this command executes jupyter lab – replace with your own command
 
-#python -u  main_train.py --input_dir ./Input/Images/monet_jpg_names/ --input_name monet96.jpg --min_size 25 --max_size 256 --scale_factor 0.56  --alpha 10                      ### this command executes jupyter lab – replace with your own command
+#python -u  main_train.py --input_dir ./Input/Images/monet_jpg_names/ --input_name monet6016.jpg --min_size 25 --max_size 256 --scale_factor 0.56  --alpha 10                      ### this command executes jupyter lab – replace with your own command
 
-#python -u  main_train.py --input_dir ./Input/Images/monet_jpg_names/ --input_name monet96.jpg --min_size 25 --max_size 256 --scale_factor 0.47  --alpha 10                      ### this command executes jupyter lab – replace with your own command
+#python -u  main_train.py --input_dir ./Input/Images/monet_jpg_names/ --input_name monet6016.jpg --min_size 25 --max_size 256 --scale_factor 0.47  --alpha 10                      ### this command executes jupyter lab – replace with your own command
 
-#python -u  main_train.py --input_dir ./Input/Images/monet_jpg_names/ --input_name monet96.jpg --min_size 25 --max_size 256 --scale_factor 0.47  --alpha 10                      ### this command executes jupyter lab – replace with your own command
+#python -u  main_train.py --input_dir ./Input/Images/monet_jpg_names/ --input_name monet6016.jpg --min_size 25 --max_size 256 --scale_factor 0.47  --alpha 10                      ### this command executes jupyter lab – replace with your own command
 
-#python -u  main_train.py --input_dir ./Input/Images/monet_jpg_names/ --input_name monet96.jpg --min_size 25 --max_size 256 --scale_factor 0.32  --alpha 10                      ### this command executes jupyter lab – replace with your own command
+#python -u  main_train.py --input_dir ./Input/Images/monet_jpg_names/ --input_name monet6016.jpg --min_size 25 --max_size 256 --scale_factor 0.32  --alpha 10                      ### this command executes jupyter lab – replace with your own command
 
 #python -u  main_train.py --help
