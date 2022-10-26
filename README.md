@@ -49,6 +49,6 @@ This script will inject each photo image in photo_jpg into its top5 SinGAN model
 ## step 5 - inference: Aggregation
 From the main folder run
 ```
-python ./painting_gen/sbatchScripts/weighted_sum_output/EI_top5.py
+sbatch painting_gen/sbatchScripts/weighted_sum_output/sbatch_gpu_EI_top5.example
 ```
 This script will aggregate the generated images according to the weighted sum defined in the paper and will save it into ./eval_dir/top5/ alongside its source image and the 5 Monet paintings. It is optional to use EI_top1.py or EI_top3.py to use the top1 or top3 matches.
